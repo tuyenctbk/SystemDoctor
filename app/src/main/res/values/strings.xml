@@ -1,0 +1,109 @@
+<resources>
+    <string name="app_name">System Doctor</string>
+    <string name="app_subtitle">TV Medical Suite</string>
+    <string name="remote_signal">Remote Signal</string>
+    <string name="remote_label">REMOTE</string>
+    <string name="refresh_stats">Refresh Stats</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_hunter">Storage Hunter</string>
+    <string name="nav_apps">App Manager</string>
+    <string name="nav_lab">Diagnostics Lab</string>
+
+    <string name="toast_cache_cleaned">Cache and junk data purged</string>
+    <string name="toast_ghost_cleared">Ghost files cleaned successfully</string>
+    <string name="toast_file_purged">purged successfully</string>
+    <string name="toast_hibernated">App hibernated and RAM released</string>
+    <string name="toast_select_app_limit">Select up to 5 apps to uninstall</string>
+    <string name="toast_revoke_permission">Permission revoked &amp; app stopped</string>
+
+    <string name="gauge_help_title">DIAGNOSTIC GAUGES GUIDE</string>
+    <string name="gauge_help_storage_title">Storage Health</string>
+    <string name="gauge_help_storage_desc">Monitors flash wear and junk accumulation. Lower scores indicate high fragmented junk.</string>
+    <string name="gauge_help_memory_title">Memory Load</string>
+    <string name="gauge_help_memory_desc">Live percentage of allocated RAM. Over 85% causes micro-stutter in 4K streaming.</string>
+    <string name="gauge_help_network_title">Network Quality</string>
+    <string name="gauge_help_network_desc">Real-time bitrate stability and jitter index measured against streaming CDN nodes.</string>
+
+    <string name="card_system_health">SYSTEM HEALTH INDEX</string>
+    <string name="online">ONLINE</string>
+    <string name="offline">OFFLINE</string>
+    <string name="active">ACTIVE</string>
+    <string name="health_optimal">All systems operational with low fragment load</string>
+    <string name="health_suboptimal">Elevated junk load detected; purge recommended</string>
+    <string name="card_network_speed">NETWORK VELOCITY</string>
+    <string name="stream_velocity">STREAM VELOCITY</string>
+    <string name="packet_loss">PACKET LOSS</string>
+    <string name="card_storage_capacity">STORAGE PARTITION</string>
+    <string name="storage_left">remaining free space</string>
+    <string name="card_memory_allocation">RAM ALLOCATION</string>
+    <string name="active_processes">active system processes</string>
+    <string name="card_remote_battery">REMOTE CONTROLLER</string>
+    <string name="card_video_output">VIDEO OUTPUT</string>
+    <string name="refresh_rate">Refresh Rate</string>
+    <string name="fast_purge_title">One-Touch Fast Purge</string>
+    <string name="fast_purge_desc">Instantly flush cached thumbnail memory and system ghost traces</string>
+    <string name="purge_action">PURGE</string>
+
+    <string name="gauges_title">REAL-TIME DIAGNOSTIC GAUGES</string>
+    <string name="storage_health">Storage Health</string>
+    <string name="memory_load">Memory Load</string>
+    <string name="network_quality">Network Quality</string>
+    <string name="stream_recommendation_prefix">Capability</string>
+
+    <string name="ready_for_quick_scan">Ready for Quick Scan</string>
+    <string name="quick_scan_desc">Perform a rapid non-invasive check across flash blocks, RAM usage, ping latency, and orphaned files</string>
+    <string name="start_quick_scan">START QUICK SCAN</string>
+    <string name="scan_phase_storage">Checking storage partitions...</string>
+    <string name="scan_phase_memory">Analyzing RAM allocations...</string>
+    <string name="scan_phase_network">Testing network streaming nodes...</string>
+    <string name="scan_phase_ghost">Hunting ghost &amp; orphan caches...</string>
+    <string name="scan_phase_init">Initializing diagnostic scan...</string>
+    <string name="scan_report_healthy">System Diagnostics Clean</string>
+    <string name="scan_report_healthy_desc">Storage partitions optimized. No critical memory leaks detected.</string>
+    <string name="scan_report_network_desc">Network connection is verified ready for 4K Dolby Vision playback.</string>
+    <string name="reset_report">Reset Report</string>
+    <string name="re_run_scan">Re-run Scan</string>
+
+    <string name="visual_storage_map">VISUAL STORAGE MAP</string>
+    <string name="legend_video">Videos</string>
+    <string name="legend_apk">APKs</string>
+    <string name="legend_cache">Cache</string>
+    <string name="legend_ghost">Ghost</string>
+    <string name="legend_free">Free</string>
+    <string name="clear_cache_ghost">Clean Cache &amp; Ghost Files</string>
+    <string name="big_file_hunter_title">BIG FILE HUNTER (1GB+)</string>
+    <string name="no_large_files">No large files found on device</string>
+
+    <string name="search_apps_placeholder">Search installed apps...</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="sort_size">Size</string>
+    <string name="sort_last_used">Last Used</string>
+    <string name="batch_uninstaller_title">BATCH UNINSTALLER</string>
+    <string name="batch_uninstaller_desc">Select multiple apps to queue uninstall sequence</string>
+    <string name="uninstall_action">UNINSTALL</string>
+    <string name="force_stop_action">HIBERNATE</string>
+
+    <string name="video_output_validation">VIDEO OUTPUT VALIDATION</string>
+    <string name="live_stats">LIVE</string>
+    <string name="physical_resolution">Physical Resolution</string>
+    <string name="dynamic_refresh_rate">Dynamic Refresh Rate</string>
+    <string name="active_hdr_standard">Active HDR Standard</string>
+    <string name="cable_signal_excellent">HDMI / DisplayLink: Verified</string>
+    <string name="screen_repair_lab">SCREEN &amp; PIXEL REPAIR LAB</string>
+    <string name="screen_repair_desc">Test for dead/stuck pixels and exercise panel phosphors to mitigate image retention</string>
+    <string name="dead_pixel_tester">Dead Pixel Screen Tests (Click to view fullscreen)</string>
+    <string name="strobe_repair_action">STROBE REPAIR</string>
+    <string name="color_cycle_action">COLOR CYCLE</string>
+
+    <string name="privacy_permission_audits">PRIVACY PERMISSION AUDITS</string>
+    <string name="privacy_audit_desc">Inspect and manage apps with high-level device privileges</string>
+    <string name="revoke_action">RESTRICT</string>
+    <string name="auto_optimize_title">Auto-Optimize on Boot</string>
+    <string name="auto_optimize_desc">Automatically clear orphaned logs and cache each time TV starts up</string>
+
+    <string name="pixel_test_overlay_text">Inspecting screen. Tap or press Back to return.</string>
+    <string name="strobe_overlay_title">Strobe Screen Repair in Progress</string>
+    <string name="strobe_overlay_desc">Rapid cycling helps loosen stuck pixels and reduce retention. Tap anywhere to exit.</string>
+    <string name="color_cycle_title">RGB Color Cycle Exerciser</string>
+    <string name="color_cycle_desc">Cycles full RGB gamut across OLED / LCD panels. Tap anywhere to exit.</string>
+</resources>

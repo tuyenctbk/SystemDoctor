@@ -1,0 +1,6 @@
+{
+  "name": "System Doctor",
+  "description": "The essential toolkit to reclaim storage, optimize performance, test network quality, and diagnose hardware on your TV and devices.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
