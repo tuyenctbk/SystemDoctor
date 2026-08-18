@@ -54,19 +54,25 @@ import com.example.ui.theme.CardBorderNavy
 import com.example.ui.theme.CriticalRed
 import com.example.ui.theme.CyanPrimary
 import com.example.ui.theme.DeepBackground
+import com.example.ui.theme.HealthyGreen
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.SurfaceNavy
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 import com.example.viewmodel.SystemViewModel
 
+import androidx.compose.material.icons.filled.Speed
+import com.example.model.PerformanceOptimizationResult
+
 @Composable
 fun AppManagerScreen(
     installedApps: List<AppInfo>,
     selectedCount: Int,
     memoryInfo: MemoryInfo,
+    optimizationResult: PerformanceOptimizationResult,
     currentSortType: SystemViewModel.AppSortType,
     onSortTypeChange: (SystemViewModel.AppSortType) -> Unit,
+    onOptimizeMemory: () -> Unit,
     onToggleApp: (AppInfo) -> Unit,
     onHibernate: (AppInfo) -> Unit,
     onUninstallBatch: () -> Unit
@@ -80,6 +86,64 @@ fun AppManagerScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // PERFORMANCE OPTIMIZER HERO CARD
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+                .tvFocusable(shape = RoundedCornerShape(20.dp)),
+            colors = CardDefaults.cardColors(containerColor = SurfaceNavy),
+            border = BorderStroke(1.dp, CardBorderNavy)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Default.Speed, contentDescription = null, tint = CyanPrimary, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = stringResource(R.string.perf_optimizer_title),
+                            color = CyanPrimary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 1.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = if (optimizationResult.summaryText.isNotEmpty()) optimizationResult.summaryText else stringResource(R.string.perf_optimizer_desc),
+                        color = if (optimizationResult.summaryText.isNotEmpty()) HealthyGreen else TextSecondary,
+                        fontSize = 9.sp,
+                        fontWeight = if (optimizationResult.summaryText.isNotEmpty()) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Button(
+                    onClick = onOptimizeMemory,
+                    colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .height(38.dp)
+                        .tvFocusable(shape = RoundedCornerShape(12.dp))
+                        .testTag("optimize_memory_button"),
+                    enabled = !optimizationResult.isOptimizing
+                ) {
+                    Text(
+                        text = if (optimizationResult.isOptimizing) stringResource(R.string.optimizing_progress) else stringResource(R.string.optimize_now_action),
+                        color = Color.Black,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+            }
+        }
         // App Manager Search & Multi-Uninstall Floating panel
         Card(
             modifier = Modifier

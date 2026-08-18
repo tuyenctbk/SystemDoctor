@@ -73,7 +73,11 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
     // State flows from ViewModel
     val storageInfo by viewModel.storageInfo.collectAsStateWithLifecycle()
     val memoryInfo by viewModel.memoryInfo.collectAsStateWithLifecycle()
+    val cpuInfo by viewModel.cpuInfo.collectAsStateWithLifecycle()
     val connectionInfo by viewModel.connectionInfo.collectAsStateWithLifecycle()
+    val cacheDirectories by viewModel.cacheDirectories.collectAsStateWithLifecycle()
+    val optimizationResult by viewModel.optimizationResult.collectAsStateWithLifecycle()
+    val isMeasuringNetwork by viewModel.isMeasuringNetwork.collectAsStateWithLifecycle()
     val largeFiles by viewModel.largeFiles.collectAsStateWithLifecycle()
     val installedApps by viewModel.installedApps.collectAsStateWithLifecycle()
     val remoteBattery by viewModel.remoteBattery.collectAsStateWithLifecycle()
@@ -154,6 +158,7 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                             DashboardScreen(
                                 storageInfo = storageInfo,
                                 memoryInfo = memoryInfo,
+                                cpuInfo = cpuInfo,
                                 networkInfo = connectionInfo,
                                 remoteInfo = remoteBattery,
                                 displayStats = displayStats,
@@ -169,10 +174,15 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                         DocTab.STORAGE_HUNTER -> {
                             StorageHunterScreen(
                                 storageInfo = storageInfo,
+                                cacheDirectories = cacheDirectories,
                                 largeFiles = largeFiles,
                                 onPurgeCache = {
                                     viewModel.clearCacheAndGhostFiles()
                                     Toast.makeText(context, context.getString(R.string.toast_ghost_cleared), Toast.LENGTH_SHORT).show()
+                                },
+                                onClearDirectory = { dir ->
+                                    viewModel.clearCacheDirectory(dir)
+                                    Toast.makeText(context, context.getString(R.string.toast_dir_cleared), Toast.LENGTH_SHORT).show()
                                 },
                                 onDeleteFile = { file ->
                                     viewModel.removeLargeFile(file)
@@ -185,8 +195,13 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                                 installedApps = installedApps,
                                 selectedCount = viewModel.selectedAppCount,
                                 memoryInfo = memoryInfo,
+                                optimizationResult = optimizationResult,
                                 currentSortType = viewModel.currentSortType,
                                 onSortTypeChange = { viewModel.setSortType(it) },
+                                onOptimizeMemory = {
+                                    viewModel.runPerformanceOptimizer()
+                                    Toast.makeText(context, context.getString(R.string.toast_memory_reclaimed), Toast.LENGTH_SHORT).show()
+                                },
                                 onToggleApp = { viewModel.toggleAppSelection(it) },
                                 onHibernate = { app ->
                                     viewModel.hibernateApp(app.packageName)
@@ -211,9 +226,12 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                         DocTab.DIAGNOSTICS -> {
                             DiagnosticsLabScreen(
                                 displayStats = displayStats,
+                                connectionInfo = connectionInfo,
+                                isMeasuringNetwork = isMeasuringNetwork,
                                 permissionAudits = permissionAudits,
                                 autoOptimize = viewModel.autoOptimizeOnBoot,
                                 onToggleAutoOptimize = { viewModel.toggleAutoOptimize() },
+                                onRunPingTest = { viewModel.runNetworkPingTest() },
                                 onTriggerPixelTest = { colorIdx -> activePixelTestIndex = colorIdx },
                                 onTriggerStrobe = { activeStrobeOverlay = true },
                                 onTriggerColorCycle = { activeColorCycle = true },

@@ -24,8 +24,20 @@ class SystemViewModel(application: Application) : AndroidViewModel(application) 
     private val _memoryInfo = MutableStateFlow(repository.getMemoryInfo())
     val memoryInfo: StateFlow<MemoryInfo> = _memoryInfo.asStateFlow()
 
+    private val _cpuInfo = MutableStateFlow(repository.getCpuInfo())
+    val cpuInfo: StateFlow<CpuInfo> = _cpuInfo.asStateFlow()
+
     private val _connectionInfo = MutableStateFlow(repository.getNetworkInfo())
     val connectionInfo: StateFlow<ConnectionInfo> = _connectionInfo.asStateFlow()
+
+    private val _cacheDirectories = MutableStateFlow(repository.getCacheDirectories())
+    val cacheDirectories: StateFlow<List<CacheDirectoryInfo>> = _cacheDirectories.asStateFlow()
+
+    private val _optimizationResult = MutableStateFlow(PerformanceOptimizationResult())
+    val optimizationResult: StateFlow<PerformanceOptimizationResult> = _optimizationResult.asStateFlow()
+
+    private val _isMeasuringNetwork = MutableStateFlow(false)
+    val isMeasuringNetwork: StateFlow<Boolean> = _isMeasuringNetwork.asStateFlow()
 
     private val _largeFiles = MutableStateFlow(repository.getLargeFiles())
     val largeFiles: StateFlow<List<LargeFile>> = _largeFiles.asStateFlow()
@@ -78,7 +90,9 @@ class SystemViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             _storageInfo.value = repository.getStorageInfo()
             _memoryInfo.value = repository.getMemoryInfo()
+            _cpuInfo.value = repository.getCpuInfo()
             _connectionInfo.value = repository.getNetworkInfo()
+            _cacheDirectories.value = repository.getCacheDirectories()
             _largeFiles.value = repository.getLargeFiles()
             
             val apps = repository.getInstalledApps()
@@ -90,6 +104,47 @@ class SystemViewModel(application: Application) : AndroidViewModel(application) 
             _remoteBattery.value = repository.getRemoteBattery()
             _displayStats.value = repository.getDisplayStats()
             _permissionAudits.value = repository.getPermissionAudits()
+        }
+    }
+
+    // Measure live HTTP network ping to public server
+    fun runNetworkPingTest() {
+        viewModelScope.launch {
+            _isMeasuringNetwork.value = true
+            val updated = repository.measureRealNetworkPing()
+            _connectionInfo.value = updated
+            _isMeasuringNetwork.value = false
+        }
+    }
+
+    // Performance Optimizer
+    fun runPerformanceOptimizer() {
+        viewModelScope.launch {
+            _optimizationResult.value = PerformanceOptimizationResult(isOptimizing = true)
+            val result = repository.optimizePerformance()
+            _optimizationResult.value = result
+
+            // Update memory info to reflect reclaimed bytes
+            val currentMem = _memoryInfo.value
+            _memoryInfo.value = currentMem.copy(
+                usedBytes = (currentMem.usedBytes - result.reclaimedRamBytes).coerceAtLeast(400 * 1024 * 1024L),
+                activeProcessesCount = (currentMem.activeProcessesCount - result.stoppedProcessCount).coerceAtLeast(3)
+            )
+        }
+    }
+
+    // Clear specific cache directory
+    fun clearCacheDirectory(dirPath: String) {
+        viewModelScope.launch {
+            val target = _cacheDirectories.value.find { it.directoryPath == dirPath }
+            if (target != null) {
+                _cacheDirectories.value = _cacheDirectories.value.filter { it.directoryPath != dirPath }
+                val currentStorage = _storageInfo.value
+                _storageInfo.value = currentStorage.copy(
+                    freeBytes = currentStorage.freeBytes + target.sizeBytes,
+                    cacheBytes = (currentStorage.cacheBytes - target.sizeBytes).coerceAtLeast(0)
+                )
+            }
         }
     }
 

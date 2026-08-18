@@ -58,12 +58,17 @@ import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningAmber
 
+import androidx.compose.foundation.BorderStroke
+import com.example.model.CacheDirectoryInfo
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StorageHunterScreen(
     storageInfo: StorageInfo,
+    cacheDirectories: List<CacheDirectoryInfo>,
     largeFiles: List<LargeFile>,
     onPurgeCache: () -> Unit,
+    onClearDirectory: (String) -> Unit,
     onDeleteFile: (LargeFile) -> Unit
 ) {
     LazyColumn(
@@ -175,6 +180,35 @@ fun StorageHunterScreen(
             }
         }
 
+        // Section: Cache Directories Analyzer
+        item {
+            Text(
+                text = stringResource(R.string.cache_dirs_title),
+                color = TextSecondary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp)
+            )
+        }
+
+        if (cacheDirectories.isEmpty()) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceNavy.copy(alpha = 0.5f))
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                        Text(text = stringResource(R.string.no_cache_dirs), color = TextSecondary, fontSize = 11.sp)
+                    }
+                }
+            }
+        } else {
+            items(cacheDirectories) { dir ->
+                CacheDirRow(dirInfo = dir, onClear = { onClearDirectory(dir.directoryPath) })
+            }
+        }
+
         // Section: "Big File" Hunter (1GB+ elements)
         item {
             Text(
@@ -183,7 +217,7 @@ fun StorageHunterScreen(
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp,
-                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp)
             )
         }
 
@@ -307,6 +341,81 @@ fun LargeFileRow(file: LargeFile, onDelete: () -> Unit) {
                     tint = CriticalRed,
                     modifier = Modifier.size(16.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun CacheDirRow(dirInfo: CacheDirectoryInfo, onClear: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .tvFocusable(shape = RoundedCornerShape(16.dp))
+            .background(SurfaceNavy, RoundedCornerShape(16.dp))
+            .border(1.dp, CardBorderNavy, RoundedCornerShape(16.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .background(Color(0xFF1E293B), RoundedCornerShape(10.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FolderOpen,
+                    contentDescription = null,
+                    tint = CyanPrimary,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = dirInfo.directoryName,
+                    color = TextPrimary,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "${dirInfo.directoryPath}  •  ${dirInfo.fileCount} items",
+                    color = TextSecondary,
+                    fontSize = 9.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = String.format("%.1f MB", dirInfo.sizeBytes.toFloat() / (1024 * 1024)),
+                color = CyanPrimary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Button(
+                onClick = onClear,
+                colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .height(28.dp)
+                    .tvFocusable(shape = RoundedCornerShape(8.dp))
+                    .testTag("clear_dir_${dirInfo.directoryName}"),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(text = stringResource(R.string.clear_dir_action), color = Color.Black, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold)
             }
         }
     }

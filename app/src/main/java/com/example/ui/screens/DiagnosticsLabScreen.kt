@@ -69,12 +69,18 @@ import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningAmber
 import kotlinx.coroutines.delay
 
+import androidx.compose.material.icons.filled.Wifi
+import com.example.model.ConnectionInfo
+
 @Composable
 fun DiagnosticsLabScreen(
     displayStats: DisplayStats,
+    connectionInfo: ConnectionInfo,
+    isMeasuringNetwork: Boolean,
     permissionAudits: List<PermissionAudit>,
     autoOptimize: Boolean,
     onToggleAutoOptimize: () -> Unit,
+    onRunPingTest: () -> Unit,
     onTriggerPixelTest: (Int) -> Unit,
     onTriggerStrobe: () -> Unit,
     onTriggerColorCycle: () -> Unit,
@@ -84,6 +90,74 @@ fun DiagnosticsLabScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
+        // HTTP Network Health Ping Card
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, CardBorderNavy, RoundedCornerShape(24.dp)),
+                colors = CardDefaults.cardColors(containerColor = SurfaceNavy)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Default.Wifi, contentDescription = null, tint = CyanPrimary, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = stringResource(R.string.network_ping_tool_title),
+                                color = CyanPrimary,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                        Button(
+                            onClick = onRunPingTest,
+                            colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .tvFocusable(shape = RoundedCornerShape(10.dp))
+                                .testTag("run_ping_test_button"),
+                            enabled = !isMeasuringNetwork
+                        ) {
+                            Text(
+                                text = if (isMeasuringNetwork) stringResource(R.string.pinging_server) else stringResource(R.string.run_ping_test),
+                                color = Color.Black,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(text = stringResource(R.string.network_ping_tool_desc), color = TextSecondary, fontSize = 9.sp)
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(text = stringResource(R.string.latency_label), color = TextSecondary, fontSize = 10.sp)
+                            Text(text = "${connectionInfo.pingMs} ms", color = HealthyGreen, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = stringResource(R.string.jitter_label), color = TextSecondary, fontSize = 10.sp)
+                            Text(text = "${connectionInfo.jitterMs} ms", color = CyanPrimary, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                        }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(text = stringResource(R.string.speed_label), color = TextSecondary, fontSize = 10.sp)
+                            Text(text = "${connectionInfo.downloadSpeedMbps} Mbps", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                        }
+                    }
+                }
+            }
+        }
         // Video Output Validation
         item {
             Card(

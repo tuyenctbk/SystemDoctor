@@ -106,4 +106,33 @@
     <string name="strobe_overlay_desc">Rapid cycling helps loosen stuck pixels and reduce retention. Tap anywhere to exit.</string>
     <string name="color_cycle_title">RGB Color Cycle Exerciser</string>
     <string name="color_cycle_desc">Cycles full RGB gamut across OLED / LCD panels. Tap anywhere to exit.</string>
+    <string name="card_cpu_usage">CPU PERFORMANCE</string>
+    <string name="cpu_usage_label">CPU Load</string>
+    <string name="cpu_cores_label">Cores</string>
+    <string name="cpu_clock_label">Clock Speed</string>
+    <string name="cpu_temp_label">Temperature</string>
+    <string name="battery_status_title">BATTERY / POWER</string>
+    <string name="battery_pct_label">Battery</string>
+    <string name="battery_health_good">Healthy &amp; Connected</string>
+
+    <string name="perf_optimizer_title">PERFORMANCE OPTIMIZER</string>
+    <string name="perf_optimizer_desc">Terminate background tasks and reclaim allocated RAM for max TV speed</string>
+    <string name="optimize_now_action">OPTIMIZE MEMORY</string>
+    <string name="optimizing_progress">Reclaiming system memory...</string>
+    <string name="optimization_complete_title">Memory Successfully Reclaimed!</string>
+    <string name="optimization_complete_desc">Reclaimed %1$s of RAM across %2$d processes.</string>
+
+    <string name="network_ping_tool_title">HTTP NETWORK HEALTH PING</string>
+    <string name="network_ping_tool_desc">Measures HTTP latency, download throughput, and jitter against public edge servers</string>
+    <string name="run_ping_test">RUN NETWORK TEST</string>
+    <string name="pinging_server">Pinging public server...</string>
+    <string name="latency_label">Latency (Ping)</string>
+    <string name="jitter_label">Jitter</string>
+    <string name="speed_label">Download Speed</string>
+
+    <string name="cache_dirs_title">CACHE DIRECTORIES ANALYZER</string>
+    <string name="no_cache_dirs">No unnecessary cache directories detected</string>
+    <string name="clear_dir_action">CLEAR</string>
+    <string name="toast_dir_cleared">Cache directory cleared</string>
+    <string name="toast_memory_reclaimed">Memory reclaimed successfully</string>
 </resources>

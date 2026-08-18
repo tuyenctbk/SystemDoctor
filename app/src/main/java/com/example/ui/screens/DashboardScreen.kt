@@ -103,6 +103,7 @@ import com.example.ui.theme.WarningAmber
 fun DashboardScreen(
     storageInfo: StorageInfo,
     memoryInfo: MemoryInfo,
+    cpuInfo: com.example.model.CpuInfo,
     networkInfo: NetworkInfo,
     remoteInfo: RemoteInfo,
     displayStats: DisplayStats,
@@ -336,6 +337,66 @@ fun DashboardScreen(
                         text = "${String.format("%.1f", storageInfo.freeBytes.toFloat() / (1024 * 1024 * 1024))} GB ${stringResource(R.string.storage_left)}",
                         color = TextSecondary,
                         fontSize = 10.sp
+                    )
+                }
+            }
+        }
+
+        // BENTO ITEM: CPU PERFORMANCE
+        item {
+            val cpuProgress = (cpuInfo.usagePercentage / 100f).coerceIn(0f, 1f)
+
+            BentoCard(
+                title = stringResource(R.string.card_cpu_usage),
+                modifier = Modifier.height(145.dp),
+                icon = Icons.Default.Memory
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${cpuInfo.usagePercentage}%",
+                            color = if (cpuProgress > 0.8f) CriticalRed else CyanPrimary,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                text = "${cpuInfo.coreCount} Cores @ ${String.format("%.1f", cpuInfo.clockSpeedGhz)}GHz",
+                                color = TextPrimary,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "${cpuInfo.temperatureC}°C",
+                                color = HealthyGreen,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    LinearProgressIndicator(
+                        progress = { cpuProgress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(CircleShape),
+                        color = if (cpuProgress > 0.8f) CriticalRed else CyanPrimary,
+                        trackColor = CardBorderNavy
+                    )
+
+                    Text(
+                        text = "Arch: ${cpuInfo.architecture}  •  Load: ${cpuInfo.loadAverage.take(12)}",
+                        color = TextSecondary,
+                        fontSize = 9.sp,
+                        fontFamily = FontFamily.Monospace
                     )
                 }
             }

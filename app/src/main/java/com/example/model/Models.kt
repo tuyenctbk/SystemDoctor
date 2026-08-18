@@ -81,6 +81,30 @@ data class LargeFile(
     val fileType: String // "Video", "APK", "Cache", "OBB", "Other"
 )
 
+data class CpuInfo(
+    val usagePercentage: Int,
+    val coreCount: Int,
+    val clockSpeedGhz: Double,
+    val temperatureC: Double,
+    val architecture: String,
+    val loadAverage: String
+)
+
+data class CacheDirectoryInfo(
+    val directoryPath: String,
+    val directoryName: String,
+    val sizeBytes: Long,
+    val fileCount: Int,
+    val isSystemCache: Boolean
+)
+
+data class PerformanceOptimizationResult(
+    val isOptimizing: Boolean = false,
+    val reclaimedRamBytes: Long = 0,
+    val stoppedProcessCount: Int = 0,
+    val summaryText: String = ""
+)
+
 data class BatteryInfo(
     val percentage: Int,
     val deviceName: String,
