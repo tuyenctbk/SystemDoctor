@@ -621,6 +621,7 @@ fun DashboardScreen(
                 }
             }
         }
+        }
 
         // FLOATING QUICK ACTIONS DASHBOARD
         Box(

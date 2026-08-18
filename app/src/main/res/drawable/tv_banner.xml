@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <!-- Background Slate -->
+    <path
+        android:fillColor="#070B14"
+        android:pathData="M0,0h320v180h-320z" />
+
+    <!-- Tech Cyber Grid Lines -->
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1"
+        android:pathData="M0,30h320 M0,60h320 M0,90h320 M0,120h320 M0,150h320" />
+    <path
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1"
+        android:pathData="M40,0v180 M80,0v180 M120,0v180 M160,0v180 M200,0v180 M240,0v180 M280,0v180" />
+
+    <!-- Cyan Glowing HUD Circle -->
+    <path
+        android:fillColor="#0F1626"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="2.5"
+        android:pathData="M160,90m-50,0a50,50 0 1,0 100,0a50,50 0 1,0 -100,0" />
+
+    <path
+        android:strokeColor="#00E676"
+        android:strokeWidth="1.5"
+        android:pathData="M160,90m-38,0a38,38 0 1,0 76,0a38,38 0 1,0 -76,0" />
+
+    <!-- Medical HUD Cross Symbol in Center -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M152,65h16v17h17v16h-17v17h-16v-17h-17v-16h17z" />
+
+    <!-- Signal ECG Wave -->
+    <path
+        android:strokeColor="#00E676"
+        android:strokeWidth="2.5"
+        android:pathData="M20,90 L80,90 L92,70 L104,110 L116,80 L128,95 L140,90" />
+    <path
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="2.5"
+        android:pathData="M180,90 L192,85 L204,105 L216,70 L228,110 L240,90 L300,90" />
+
+    <!-- Banner Tech Accents -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M10,10h30v4h-30z M10,10v30h4v-30z M310,10h-30v4h30z M310,10v30h-4v-30z M10,170h30v-4h-30z M10,170v-30h4v30z M310,170h-30v-4h30z M310,170v-30h-4v30z" />
+</vector>
