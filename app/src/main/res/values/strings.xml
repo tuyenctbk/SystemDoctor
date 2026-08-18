@@ -135,4 +135,27 @@
     <string name="clear_dir_action">CLEAR</string>
     <string name="toast_dir_cleared">Cache directory cleared</string>
     <string name="toast_memory_reclaimed">Memory reclaimed successfully</string>
+    <string name="notif_low_storage_title">System Low Storage Alert</string>
+    <string name="notif_low_storage_desc">TV storage is critically low (%1$s%% free). Please run Storage Hunter.</string>
+    <string name="notif_high_load_title">Performance Alert</string>
+    <string name="notif_high_load_desc">TV Memory load is very high (%1$s%% used). Run Performance Optimizer now!</string>
+    <string name="dark_mode_title">Dark Theme Mode</string>
+    <string name="dark_mode_desc">Switch system dashboard between light and dark medical theme</string>
+    <string name="health_score_title">System Health Score</string>
+    <string name="health_status_good">EXCELLENT</string>
+    <string name="health_status_warning">FAIR</string>
+    <string name="health_status_critical">CRITICAL</string>
+    <string name="onboarding_title_welcome">Welcome to System Doctor</string>
+    <string name="onboarding_desc_welcome">Your ultimate TV diagnostic and performance optimization companion designed for maximum speed.</string>
+    <string name="onboarding_title_bento">Bento Performance Lab</string>
+    <string name="onboarding_desc_bento">Monitor live CPU loads, real-time memory pressure, and remote battery levels with a glance.</string>
+    <string name="onboarding_title_hunter">Storage &amp; Network Hunter</string>
+    <string name="onboarding_desc_hunter">Detect large media files, analyze cache clusters, and measure network health with HTTP Edge pings.</string>
+    <string name="onboarding_title_ready">Doctor is Ready</string>
+    <string name="onboarding_desc_ready">Configure background auto-optimization with WorkManager so your smart TV always stays smooth.</string>
+    <string name="onboarding_action_next">NEXT</string>
+    <string name="onboarding_action_start">START DOCTOR</string>
+    <string name="quick_actions_title">QUICK SYSTEM DOCTOR ACTIONS</string>
+    <string name="quick_action_optimize">QUICK OPTIMIZE</string>
+    <string name="quick_action_scan">QUICK SCAN</string>
 </resources>

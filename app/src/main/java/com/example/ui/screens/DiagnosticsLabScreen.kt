@@ -79,7 +79,9 @@ fun DiagnosticsLabScreen(
     isMeasuringNetwork: Boolean,
     permissionAudits: List<PermissionAudit>,
     autoOptimize: Boolean,
+    isDarkMode: Boolean,
     onToggleAutoOptimize: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     onRunPingTest: () -> Unit,
     onTriggerPixelTest: (Int) -> Unit,
     onTriggerStrobe: () -> Unit,
@@ -427,6 +429,35 @@ fun DiagnosticsLabScreen(
                         uncheckedTrackColor = DeepBackground
                     ),
                     modifier = Modifier.testTag("auto_optimize_switch")
+                )
+            }
+        }
+
+        // Dark Theme Settings Config
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(SurfaceNavy, RoundedCornerShape(20.dp))
+                    .border(1.dp, CardBorderNavy, RoundedCornerShape(20.dp))
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = stringResource(R.string.dark_mode_title), color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    Text(text = stringResource(R.string.dark_mode_desc), color = TextSecondary, fontSize = 9.sp)
+                }
+                Switch(
+                    checked = isDarkMode,
+                    onCheckedChange = { onToggleDarkMode() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = CyanPrimary,
+                        checkedTrackColor = MedicalGlowBlue,
+                        uncheckedThumbColor = TextSecondary,
+                        uncheckedTrackColor = DeepBackground
+                    ),
+                    modifier = Modifier.testTag("dark_mode_switch")
                 )
             }
         }

@@ -8,6 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.data.OptimizationWorker
+import java.util.concurrent.TimeUnit
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -40,8 +45,11 @@ import com.example.ui.screens.DeadPixelTestOverlay
 import com.example.ui.screens.DiagnosticsLabScreen
 import com.example.ui.screens.StorageHunterScreen
 import com.example.ui.screens.StrobeRepairOverlay
+import com.example.ui.screens.OnboardingScreen
 import com.example.ui.theme.DeepBackground
 import com.example.ui.theme.MyApplicationTheme
+import com.example.ui.theme.isAppDarkMode
+import android.content.Context
 import com.example.viewmodel.SystemViewModel
 
 enum class DocTab {
@@ -57,6 +65,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        try {
+            val workRequest = PeriodicWorkRequestBuilder<OptimizationWorker>(
+                1, TimeUnit.HOURS
+            ).build()
+            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                "system_doctor_periodic_opt",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         setContent {
             MyApplicationTheme {
                 SystemDoctorApp(viewModel)
@@ -68,6 +90,26 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SystemDoctorApp(viewModel: SystemViewModel) {
     val context = LocalContext.current
+    var onboardingCompleted by remember {
+        mutableStateOf(
+            context.getSharedPreferences("system_doctor_prefs", Context.MODE_PRIVATE)
+                .getBoolean("onboarding_completed", false)
+        )
+    }
+
+    if (!onboardingCompleted) {
+        OnboardingScreen(
+            onFinished = {
+                onboardingCompleted = true
+                context.getSharedPreferences("system_doctor_prefs", Context.MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("onboarding_completed", true)
+                    .apply()
+            }
+        )
+        return
+    }
+
     var currentTab by remember { mutableStateOf(DocTab.DASHBOARD) }
 
     // State flows from ViewModel
@@ -168,6 +210,13 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                                 onPurgeCache = {
                                     viewModel.clearCacheAndGhostFiles()
                                     Toast.makeText(context, context.getString(R.string.toast_cache_cleaned), Toast.LENGTH_SHORT).show()
+                                },
+                                onQuickOptimize = {
+                                    viewModel.runPerformanceOptimizer()
+                                    Toast.makeText(context, context.getString(R.string.toast_memory_reclaimed), Toast.LENGTH_SHORT).show()
+                                },
+                                onQuickScan = {
+                                    viewModel.startQuickScan()
                                 }
                             )
                         }
@@ -230,7 +279,9 @@ fun SystemDoctorApp(viewModel: SystemViewModel) {
                                 isMeasuringNetwork = isMeasuringNetwork,
                                 permissionAudits = permissionAudits,
                                 autoOptimize = viewModel.autoOptimizeOnBoot,
+                                isDarkMode = isAppDarkMode,
                                 onToggleAutoOptimize = { viewModel.toggleAutoOptimize() },
+                                onToggleDarkMode = { isAppDarkMode = !isAppDarkMode },
                                 onRunPingTest = { viewModel.runNetworkPingTest() },
                                 onTriggerPixelTest = { colorIdx -> activePixelTestIndex = colorIdx },
                                 onTriggerStrobe = { activeStrobeOverlay = true },

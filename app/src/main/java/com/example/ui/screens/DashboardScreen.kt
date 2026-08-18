@@ -45,6 +45,8 @@ import androidx.compose.material.icons.filled.SettingsRemote
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.Healing
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -110,16 +112,31 @@ fun DashboardScreen(
     scanResult: QuickScanResult,
     onStartScan: () -> Unit,
     onResetScan: () -> Unit,
-    onPurgeCache: () -> Unit
+    onPurgeCache: () -> Unit,
+    onQuickOptimize: () -> Unit,
+    onQuickScan: () -> Unit
 ) {
     var showGaugeHelpDialog by remember { mutableStateOf(false) }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
+    // Dynamic aggregated System Health Score Calculation
+    val memoryUsedPct = if (memoryInfo.totalBytes > 0) (memoryInfo.usedBytes.toFloat() / memoryInfo.totalBytes * 100f) else 45f
+    val memoryHealth = (100f - memoryUsedPct).coerceIn(0f, 100f)
+    val cpuHealth = (100f - cpuInfo.usagePercentage).coerceIn(0f, 100f)
+    val storageUsedPct = if (storageInfo.totalBytes > 0) ((storageInfo.totalBytes - storageInfo.freeBytes).toFloat() / storageInfo.totalBytes * 100f) else 35f
+    val storageHealth = (100f - storageUsedPct).coerceIn(0f, 100f)
+    
+    // Aggregated Score: 40% memory weight, 30% cpu weight, 30% storage weight
+    val aggregatedHealthScore = (memoryHealth * 0.4f + cpuHealth * 0.3f + storageHealth * 0.3f).toInt().coerceIn(0, 100)
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 75.dp), // Make space for the floating quick actions bar
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
         // TOP SECTION: REALTIME DIAGNOSTIC GAUGES
         item(span = { GridItemSpan(2) }) {
             RealtimeGaugesSection(
@@ -210,8 +227,19 @@ fun DashboardScreen(
 
         // BENTO ITEM: REAL-TIME HEALTH INDEX
         item {
+            val statusColor = when {
+                aggregatedHealthScore > 80 -> HealthyGreen
+                aggregatedHealthScore > 50 -> WarningAmber
+                else -> CriticalRed
+            }
+            val statusText = when {
+                aggregatedHealthScore > 80 -> stringResource(R.string.health_status_good)
+                aggregatedHealthScore > 50 -> stringResource(R.string.health_status_warning)
+                else -> stringResource(R.string.health_status_critical)
+            }
+
             BentoCard(
-                title = stringResource(R.string.card_system_health),
+                title = stringResource(R.string.health_score_title),
                 modifier = Modifier.height(145.dp),
                 icon = Icons.Default.AutoAwesome
             ) {
@@ -224,8 +252,8 @@ fun DashboardScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${storageInfo.healthScore}%",
-                            color = if (storageInfo.healthScore > 80) HealthyGreen else WarningAmber,
+                            text = "$aggregatedHealthScore%",
+                            color = statusColor,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
@@ -233,21 +261,21 @@ fun DashboardScreen(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    if (storageInfo.healthScore > 80) HealthyGreen.copy(alpha = 0.2f) else WarningAmber.copy(alpha = 0.2f),
+                                    statusColor.copy(alpha = 0.2f),
                                     RoundedCornerShape(6.dp)
                                 )
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = if (storageInfo.healthScore > 80) stringResource(R.string.online) else stringResource(R.string.active),
-                                color = if (storageInfo.healthScore > 80) HealthyGreen else WarningAmber,
+                                text = statusText,
+                                color = statusColor,
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
                     Text(
-                        text = if (storageInfo.healthScore > 80) stringResource(R.string.health_optimal) else stringResource(R.string.health_suboptimal),
+                        text = if (aggregatedHealthScore > 80) stringResource(R.string.health_optimal) else stringResource(R.string.health_suboptimal),
                         color = TextSecondary,
                         fontSize = 11.sp
                     )
@@ -589,6 +617,76 @@ fun DashboardScreen(
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(text = stringResource(R.string.purge_action), color = CyanPrimary, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                }
+            }
+        }
+
+        // FLOATING QUICK ACTIONS DASHBOARD
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .border(1.5.dp, CyanPrimary, RoundedCornerShape(22.dp)),
+                colors = CardDefaults.cardColors(containerColor = SurfaceNavy.copy(alpha = 0.96f)),
+                shape = RoundedCornerShape(22.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.quick_actions_title),
+                        color = CyanPrimary,
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 1.sp,
+                        modifier = Modifier.weight(0.9f)
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = onQuickOptimize,
+                            colors = ButtonDefaults.buttonColors(containerColor = CyanPrimary),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .tvFocusable(shape = RoundedCornerShape(10.dp))
+                                .testTag("quick_optimize_button"),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 2.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Speed, contentDescription = null, tint = Color.Black, modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = stringResource(R.string.quick_action_optimize), color = Color.Black, fontSize = 8.sp, fontWeight = FontWeight.ExtraBold)
+                        }
+
+                        Button(
+                            onClick = onQuickScan,
+                            colors = ButtonDefaults.buttonColors(containerColor = HealthyGreen),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .tvFocusable(shape = RoundedCornerShape(10.dp))
+                                .testTag("quick_scan_button"),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 2.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Healing, contentDescription = null, tint = Color.Black, modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = stringResource(R.string.quick_action_scan), color = Color.Black, fontSize = 8.sp, fontWeight = FontWeight.ExtraBold)
+                        }
                     }
                 }
             }
