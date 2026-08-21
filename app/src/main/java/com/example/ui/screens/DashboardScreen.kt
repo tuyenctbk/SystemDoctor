@@ -296,7 +296,7 @@ fun DashboardScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "${networkInfo.downloadSpeedMbps}",
+                            text = String.format("%.1f", networkInfo.downloadSpeedMbps),
                             color = TextPrimary,
                             fontSize = 30.sp,
                             fontWeight = FontWeight.ExtraBold
@@ -314,7 +314,7 @@ fun DashboardScreen(
                         }
                         Column(horizontalAlignment = Alignment.End) {
                             Text(text = stringResource(R.string.packet_loss), color = TextSecondary, fontSize = 9.sp)
-                            Text(text = "${networkInfo.packetLossPct}%", color = HealthyGreen, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text(text = String.format("%.2f%%", networkInfo.packetLossPct), color = HealthyGreen, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -402,7 +402,7 @@ fun DashboardScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "${cpuInfo.temperatureC}°C",
+                                text = String.format("%.1f°C", cpuInfo.temperatureC),
                                 color = HealthyGreen,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold

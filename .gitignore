@@ -1,18 +1,37 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# IntelliJ/Android Studio
+.idea/
 *.iml
-.gradle
-.kotlin
+*.iws
+*.ipr
+
+# Android
+captures/
+.externalNativeBuild/
+.cxx/
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-.env
 debug.keystore
+*.jks
+*.keystore
+*.aab
+*.apk
+
+# Kotlin/Multiplatform
+.kotlin/
+
+# Secrets & Environment
+.env
+.env.*
+.artifacts/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Roborazzi
+**/screenshots_diff/
+**/screenshots_preview/

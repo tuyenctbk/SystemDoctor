@@ -154,7 +154,7 @@ fun DiagnosticsLabScreen(
                         }
                         Column(horizontalAlignment = Alignment.End) {
                             Text(text = stringResource(R.string.speed_label), color = TextSecondary, fontSize = 10.sp)
-                            Text(text = "${connectionInfo.downloadSpeedMbps} Mbps", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(text = String.format("%.1f Mbps", connectionInfo.downloadSpeedMbps), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
                         }
                     }
                 }

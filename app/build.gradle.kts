@@ -1,4 +1,5 @@
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
+import java.util.Properties
 
 plugins {
   alias(libs.plugins.android.application)
@@ -14,22 +15,30 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.aistudio.systemdoctor.qrvjzx"
+    applicationId = "com.soloprono.systemdoctor"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = 10
+    versionName = "2.0.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  val localProperties = Properties()
+  val localPropertiesFile = rootProject.file("local.properties")
+  if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { stream ->
+      localProperties.load(stream)
+    }
+  }
+
   signingConfigs {
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
-      storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
+      val storeFileProperty = localProperties.getProperty("signing.release.storeFile")
+      storeFile = if (storeFileProperty != null) rootProject.file(storeFileProperty) else null
+      storePassword = localProperties.getProperty("signing.release.storePassword")
+      keyAlias = localProperties.getProperty("signing.release.keyAlias")
+      keyPassword = localProperties.getProperty("signing.release.keyPassword")
     }
     create("debugConfig") {
       storeFile = file("${rootDir}/debug.keystore")
